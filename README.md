@@ -1,2 +1,4 @@
-# fullstack-nanodegree-item-catalog
-P3: Item Catalog
+rdb-fullstack
+=============
+
+Common code for the Relational Databases and Full Stack Fundamentals courses
