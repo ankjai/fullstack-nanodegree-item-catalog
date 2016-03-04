@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -26,40 +26,44 @@ def list_restaurants():
     return render_template('home.html', restaurants=restaurants)
 
 
-@app.route('/restaurant/<int:restaurant_id>/')
-@app.route('/restaurant/<int:restaurant_id>/menu/')
+@app.route('/restaurant/<int:restaurant_id>/', methods=['GET', 'POST'])
+@app.route('/restaurant/<int:restaurant_id>/menu/', methods=['GET', 'POST'])
 def view_restaurant_menu(restaurant_id):
     restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
     items = session.query(MenuItem).filter_by(restaurant_id=restaurant_id)
     return render_template('restaurant_menu.html', restaurant=restaurant, items=items)
 
 
-@app.route('/restaurant/new/')
+@app.route('/restaurant/new/', methods=['GET', 'POST'])
 def new_restaurant():
-    return render_template('restaurant_new.html', stm="add new restaurant")
+    if request.method == 'POST':
+        restaurant = Restaurant(name=request.form['name'])
+        session.add(restaurant)
+        session.commit()
+    return render_template('restaurant_new.html')
 
 
-@app.route('/restaurant/<int:restaurant_id>/edit/')
+@app.route('/restaurant/<int:restaurant_id>/edit/', methods=['GET'])
 def edit_restaurant(restaurant_id):
     return render_template('restaurant_edit.html', stm="edit existing restaurant")
 
 
-@app.route('/restaurant/<int:restaurant_id>/delete/')
+@app.route('/restaurant/<int:restaurant_id>/delete/', methods=['GET', 'DELETE'])
 def delete_restaurant(restaurant_id):
     return render_template('restaurant_delete.html', stm="delete existing restaurant")
 
 
-@app.route('/restaurant/<int:restaurant_id>/menu/new/')
+@app.route('/restaurant/<int:restaurant_id>/menu/new/', methods=['GET', 'POST'])
 def new_menu_item(restaurant_id):
     return render_template('menu_new.html', stm="new menu item")
 
 
-@app.route('/restaurant/<int:restaurant_id>/menu/<int:menu_id>/edit/')
+@app.route('/restaurant/<int:restaurant_id>/menu/<int:menu_id>/edit/', methods=['GET', 'POST'])
 def edit_menu_item(restaurant_id, menu_id):
     return render_template('menu_edit.html', stm="edit menu item")
 
 
-@app.route('/restaurant/<int:restaurant_id>/menu/<int:menu_id>/delete/')
+@app.route('/restaurant/<int:restaurant_id>/menu/<int:menu_id>/delete/', methods=['GET', 'DELETE'])
 def delete_menu_item(restaurant_id, menu_id):
     return render_template('menu_delete.html', stm="delete menu item")
 

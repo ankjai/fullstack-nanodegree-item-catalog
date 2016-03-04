@@ -5,12 +5,14 @@
     <title>All Restaurants</title>
 </head>
 <body>
+{% for i in restaurants %}
 <h3>
-    {% for i in restaurants %}
     <a href="{{ url_for('view_restaurant_menu', restaurant_id=i.id) }}">
         {{i.name}}
     </a>
-    {% endfor %}
 </h3>
+{% endfor %}
+
+<h5><a href="{{ url_for('new_restaurant') }}">Add New Restaurant</a></h5>
 </body>
 </html>
