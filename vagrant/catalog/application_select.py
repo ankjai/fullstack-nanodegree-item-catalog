@@ -15,7 +15,9 @@ Base.metadata.create_all(engine)
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
-myFirstRestaurant = Restaurant(name='Pizza Palace')
+restaurants = session.query(Restaurant).all()
 
-session.add(myFirstRestaurant)
-session.commit()
+print restaurants
+
+for i in restaurants:
+    print i.name
