@@ -20,47 +20,47 @@ session = DBSession()
 
 
 @app.route('/')
-@app.route('/restaurants')
-def restaurantAll():
+@app.route('/restaurant')
+def list_restaurants():
     restaurants = session.query(Restaurant).all()
     return render_template('home.html', restaurants=restaurants)
 
 
 @app.route('/restaurant/<int:restaurant_id>/')
 @app.route('/restaurant/<int:restaurant_id>/menu/')
-def viewRestaurantMenu(restaurant_id):
+def view_restaurant_menu(restaurant_id):
     restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
     items = session.query(MenuItem).filter_by(restaurant_id=restaurant_id)
     return render_template('restaurant_menu.html', restaurant=restaurant, items=items)
 
 
 @app.route('/restaurant/new/')
-def newRestaurant():
+def new_restaurant():
     return render_template('restaurant_new.html', stm="add new restaurant")
 
 
 @app.route('/restaurant/<int:restaurant_id>/edit/')
-def editRestaurant(restaurant_id):
+def edit_restaurant(restaurant_id):
     return render_template('restaurant_edit.html', stm="edit existing restaurant")
 
 
 @app.route('/restaurant/<int:restaurant_id>/delete/')
-def deleteRestaurant(restaurant_id):
+def delete_restaurant(restaurant_id):
     return render_template('restaurant_delete.html', stm="delete existing restaurant")
 
 
 @app.route('/restaurant/<int:restaurant_id>/menu/new/')
-def newMenuItem(restaurant_id):
+def new_menu_item(restaurant_id):
     return render_template('menu_new.html', stm="new menu item")
 
 
 @app.route('/restaurant/<int:restaurant_id>/menu/<int:menu_id>/edit/')
-def editMenuItem(restaurant_id, menu_id):
+def edit_menu_item(restaurant_id, menu_id):
     return render_template('menu_edit.html', stm="edit menu item")
 
 
 @app.route('/restaurant/<int:restaurant_id>/menu/<int:menu_id>/delete/')
-def deleteMenuItem(restaurant_id, menu_id):
+def delete_menu_item(restaurant_id, menu_id):
     return render_template('menu_delete.html', stm="delete menu item")
 
 
