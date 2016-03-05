@@ -26,12 +26,19 @@ def list_restaurants():
     return render_template('home.html', restaurants=restaurants)
 
 
-@app.route('/restaurant/<int:restaurant_id>/', methods=['GET', 'POST'])
-@app.route('/restaurant/<int:restaurant_id>/menu/', methods=['GET', 'POST'])
+@app.route('/restaurant/<int:restaurant_id>/', methods=['GET'])
+@app.route('/restaurant/<int:restaurant_id>/menu/', methods=['GET'])
 def view_restaurant_menu(restaurant_id):
+    print "GET:", restaurant_id
     restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
     items = session.query(MenuItem).filter_by(restaurant_id=restaurant_id)
-    return render_template('restaurant_menu.html', restaurant=restaurant, items=items)
+    print items
+    for i in items:
+        print i.name
+        print i.course
+        print i.description
+        print i.price
+    return render_template('restaurant_menu.html', restaurant=restaurant, items=items, restaurant_id=restaurant_id)
 
 
 @app.route('/restaurant/new/', methods=['GET', 'POST'])
@@ -55,7 +62,22 @@ def delete_restaurant(restaurant_id):
 
 @app.route('/restaurant/<int:restaurant_id>/menu/new/', methods=['GET', 'POST'])
 def new_menu_item(restaurant_id):
-    return render_template('menu_new.html', stm="new menu item")
+    # if request.method == 'GET':
+    restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
+    print "GET:", restaurant_id
+
+    if request.method == 'POST':
+        print "POST:", restaurant_id
+        print request.form['name'], request.form['course'], request.form['description'], request.form['price']
+        menu_item = MenuItem(name=request.form['name'],
+                             course=request.form['course'],
+                             description=request.form['description'],
+                             price=request.form['price'],
+                             restaurant_id=restaurant_id)
+        session.add(menu_item)
+        session.commit()
+
+    return render_template('menu_new.html', restaurant_id=restaurant_id, restaurant=restaurant)
 
 
 @app.route('/restaurant/<int:restaurant_id>/menu/<int:menu_id>/edit/', methods=['GET', 'POST'])

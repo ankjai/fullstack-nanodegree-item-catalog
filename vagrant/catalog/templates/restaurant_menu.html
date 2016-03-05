@@ -5,6 +5,18 @@
     <title>Restaurant</title>
 </head>
 <body>
-{{stm}}
+<h3>{{restaurant.name}}</h3>
+<h3>{{items.name}}</h3>
+{% for i in items %}
+<p>{{i.name}}</p>
+<p>{{i.id}}</p>
+<p>{{i.course}}</p>
+<p>{{i.description}}</p>
+<p>{{i.price}}</p>
+<br>
+{% endfor %}
+
+<h5><a href="{{ url_for('new_menu_item',restaurant_id=restaurant_id) }}">Add New Menu Item</a></h5>
+
 </body>
 </html>
