@@ -41,12 +41,21 @@ def new_restaurant():
         session.add(restaurant)
         session.commit()
         return redirect(url_for('list_restaurants'))
-    return render_template('restaurant_new.html')
+    else:
+        return render_template('restaurant_new.html')
 
 
-@app.route('/restaurant/<int:restaurant_id>/edit/', methods=['GET'])
+@app.route('/restaurant/<int:restaurant_id>/edit/', methods=['GET', 'POST'])
 def edit_restaurant(restaurant_id):
-    return render_template('restaurant_edit.html', stm="edit existing restaurant")
+    edited_restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
+    if request.method == 'POST':
+        if request.form['name']:
+            edited_restaurant.name = request.form['name']
+        session.add(edited_restaurant)
+        session.commit()
+        return redirect(url_for('list_restaurants'))
+    else:
+        return render_template('restaurant_edit.html', restaurant=edited_restaurant)
 
 
 @app.route('/restaurant/<int:restaurant_id>/delete/', methods=['GET', 'DELETE'])
@@ -56,11 +65,6 @@ def delete_restaurant(restaurant_id):
 
 @app.route('/restaurant/<int:restaurant_id>/menu/new/', methods=['GET', 'POST'])
 def new_menu_item(restaurant_id):
-    restaurant = None
-
-    if request.method == 'GET':
-        restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
-
     if request.method == 'POST':
         menu_item = MenuItem(name=request.form['name'],
                              course=request.form['course'],
@@ -70,8 +74,9 @@ def new_menu_item(restaurant_id):
         session.add(menu_item)
         session.commit()
         return redirect(url_for('view_restaurant_menu', restaurant_id=restaurant_id))
-
-    return render_template('menu_new.html', restaurant_id=restaurant_id, restaurant=restaurant)
+    else:
+        restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
+        return render_template('menu_new.html', restaurant_id=restaurant_id, restaurant=restaurant)
 
 
 @app.route('/restaurant/<int:restaurant_id>/menu/<int:menu_id>/edit/', methods=['GET', 'POST'])

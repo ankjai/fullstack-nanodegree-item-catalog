@@ -5,6 +5,9 @@
     <title>Edit Restaurant</title>
 </head>
 <body>
-{{stm}}
+<form action="{{url_for('edit_restaurant', restaurant_id=restaurant.id)}}" method="post">
+    <p>Update Restaurant Name: </p><input type="text" name="name" placeholder="{{restaurant.name}}">
+    <input type="submit" value="Edit">
+</form>
 </body>
 </html>
