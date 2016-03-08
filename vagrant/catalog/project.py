@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -29,15 +29,8 @@ def list_restaurants():
 @app.route('/restaurant/<int:restaurant_id>/', methods=['GET'])
 @app.route('/restaurant/<int:restaurant_id>/menu/', methods=['GET'])
 def view_restaurant_menu(restaurant_id):
-    print "GET:", restaurant_id
     restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
     items = session.query(MenuItem).filter_by(restaurant_id=restaurant_id)
-    print items
-    for i in items:
-        print i.name
-        print i.course
-        print i.description
-        print i.price
     return render_template('restaurant_menu.html', restaurant=restaurant, items=items, restaurant_id=restaurant_id)
 
 
@@ -47,6 +40,7 @@ def new_restaurant():
         restaurant = Restaurant(name=request.form['name'])
         session.add(restaurant)
         session.commit()
+        return redirect(url_for('list_restaurants'))
     return render_template('restaurant_new.html')
 
 
@@ -62,13 +56,12 @@ def delete_restaurant(restaurant_id):
 
 @app.route('/restaurant/<int:restaurant_id>/menu/new/', methods=['GET', 'POST'])
 def new_menu_item(restaurant_id):
-    # if request.method == 'GET':
-    restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
-    print "GET:", restaurant_id
+    restaurant = None
+
+    if request.method == 'GET':
+        restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
 
     if request.method == 'POST':
-        print "POST:", restaurant_id
-        print request.form['name'], request.form['course'], request.form['description'], request.form['price']
         menu_item = MenuItem(name=request.form['name'],
                              course=request.form['course'],
                              description=request.form['description'],
@@ -76,6 +69,7 @@ def new_menu_item(restaurant_id):
                              restaurant_id=restaurant_id)
         session.add(menu_item)
         session.commit()
+        return redirect(url_for('view_restaurant_menu', restaurant_id=restaurant_id))
 
     return render_template('menu_new.html', restaurant_id=restaurant_id, restaurant=restaurant)
 
