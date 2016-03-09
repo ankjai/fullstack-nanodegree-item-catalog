@@ -6,6 +6,15 @@
 </head>
 <body>
 <h3>{{restaurant.name}}</h3>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for message in messages %}
+<p><strong>{{ message }}</strong></p>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
 <h3>{{items.name}}</h3>
 {% for i in items %}
 <p>{{i.name}}</p>
