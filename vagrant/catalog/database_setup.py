@@ -26,6 +26,16 @@ class MenuItem(Base):
     restaurant_id = Column(Integer, ForeignKey('restaurant.id'), nullable=False)
     restaurant = relationship(Restaurant)
 
+    @property
+    def serialize(self):
+        return {
+            'name': self.name,
+            'description': self.description,
+            'id': self.id,
+            'price': self.price,
+            'course': self.course
+        }
+
 
 # Create an engine that stores data in the local directory's
 # restaurantmenu.db file.
