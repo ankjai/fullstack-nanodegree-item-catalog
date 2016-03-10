@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from database_setup import Base, Restaurant
+from database_setup import Base, Restaurant, MenuItem
 
 # Create an engine that stores data in the local directory's
 # restaurantmenu.db file.
@@ -15,7 +15,10 @@ Base.metadata.create_all(engine)
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
-myFirstRestaurant = Restaurant(name='Pizza Palace')
+results = session.query(MenuItem).all()
 
-session.add(myFirstRestaurant)
-session.commit()
+print results
+
+for i in results:
+    print i.name
+    print i.restaurant_id
