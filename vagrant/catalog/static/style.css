@@ -17,12 +17,12 @@ body {
     margin: 20px;
     border: solid #d6d6d6 1px;
     border-radius: 5px;
-    min-height: 50px;
-    max-height: 150px;
     background-color: white;
+    overflow: auto;
 }
 
 .restaurantName {
+    max-width: 90%;
     float: left;
     padding: 5px;
 }
