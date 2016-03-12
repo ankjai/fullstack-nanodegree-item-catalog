@@ -10,15 +10,27 @@ body {
 }
 
 .navbar {
-    /* background-color: lightblue; */
     margin-top: 20px;
 }
 
 .restaurant {
+    margin: 20px;
+    border: solid #d6d6d6 1px;
+    border-radius: 5px;
     min-height: 50px;
+    max-height: 150px;
     background-color: white;
 }
 
 .restaurantName {
+    float: left;
     padding: 5px;
+}
+
+.dropdown {
+    float: right;
+}
+
+.btn {
+    border: none;
 }

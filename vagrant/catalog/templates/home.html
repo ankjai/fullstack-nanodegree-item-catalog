@@ -31,15 +31,21 @@
         <div class="col-md-4">
             {% for i in restaurants %}
             <div class="restaurant">
-                <h4 class="restaurantName">
-                    <a href="{{ url_for('view_restaurant_menu', restaurant_id=i.id) }}">{{i.name}}</a>
-                </h4>
-                <!--<h5>-->
-                <!--<a class="btn btn-default btn-xs" href="{{url_for('edit_restaurant', restaurant_id=i.id)}}"-->
-                <!--role="button">Edit</a>-->
-                <!--<a class="btn btn-default btn-xs" href="{{url_for('delete_restaurant', restaurant_id=i.id)}}"-->
-                <!--role="button">Delete</a>-->
-                <!--</h5>-->
+                <div class="restaurantName">
+                    <h4>
+                        <a href="{{ url_for('view_restaurant_menu', restaurant_id=i.id) }}">{{i.name}}</a>
+                    </h4>
+                </div>
+                <div class="dropdown">
+                    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="true">
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+                        <li><a href="{{url_for('edit_restaurant', restaurant_id=i.id)}}">Edit</a></li>
+                        <li><a href="{{url_for('delete_restaurant', restaurant_id=i.id)}}">Delete</a></li>
+                    </ul>
+                </div>
             </div>
             {% endfor %}
         </div>
@@ -48,6 +54,8 @@
 </div>
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+        integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+        crossorigin="anonymous"></script>
 </body>
 </html>
