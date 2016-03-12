@@ -1,0 +1,15 @@
+* {
+    /* border: solid black 1px !important; */
+}
+
+body {
+    margin-left: 5%;
+    margin-right: 5%;
+    font-family: sans-serif;
+    background-color: #e9eaed;
+}
+
+.navbar {
+    /* background-color: lightblue; */
+    margin-top: 20px;
+}

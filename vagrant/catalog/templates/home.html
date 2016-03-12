@@ -2,25 +2,36 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>All Restaurants</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-{% for message in messages %}
-<p><strong>{{ message }}</strong></p>
-{% endfor %}
-{% endif %}
-{% endwith %}
+<div class="container-fluid">
+    <div class="row">
+        <nav class="navbar navbar-default">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="{{ url_for('list_restaurants') }}">Restaurants</a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="active">
+                        <a href="{{ url_for('new_restaurant') }}">Add New Restaurant</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
 
-{% for i in restaurants %}
-<h3>
-    <a href="{{ url_for('view_restaurant_menu', restaurant_id=i.id) }}">{{i.name}}</a>
-</h3>
-<h5><a href="{{url_for('edit_restaurant', restaurant_id=i.id)}}">Edit</a></h5>
-<h5><a href="{{url_for('delete_restaurant', restaurant_id=i.id)}}">Delete</a></h5>
-{% endfor %}
-
-<h5><a href="{{ url_for('new_restaurant') }}">Add New Restaurant</a></h5>
+        <div class="col-md-4"></div>
+        <div class="col-md-4"></div>
+        <div class="col-md-4"></div>
+    </div>
+</div>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
 </body>
 </html>
