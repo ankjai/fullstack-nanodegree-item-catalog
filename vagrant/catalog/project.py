@@ -128,6 +128,6 @@ def view_menu_item_json(restaurant_id, menu_id):
 
 
 if __name__ == '__main__':
-    app.secret_key = 'super_secret_key'
+    app.secret_key = 'super_secret_key_1'
     app.debug = True
     app.run(host='0.0.0.0', port=8000)
