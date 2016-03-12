@@ -14,7 +14,9 @@
     <div class="row">
         <nav class="navbar navbar-inverse">
             <div class="navbar-header">
-                <a class="navbar-brand" href="{{ url_for('list_restaurants') }}">Restaurants</a>
+                <a class="navbar-brand" href="{{ url_for('list_restaurants') }}">
+                    <span class="glyphicon glyphicon-home" aria-hidden="true"/>
+                </a>
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
@@ -33,10 +35,10 @@
                     <a href="{{ url_for('view_restaurant_menu', restaurant_id=i.id) }}">{{i.name}}</a>
                 </h4>
                 <!--<h5>-->
-                    <!--<a class="btn btn-default btn-xs" href="{{url_for('edit_restaurant', restaurant_id=i.id)}}"-->
-                       <!--role="button">Edit</a>-->
-                    <!--<a class="btn btn-default btn-xs" href="{{url_for('delete_restaurant', restaurant_id=i.id)}}"-->
-                       <!--role="button">Delete</a>-->
+                <!--<a class="btn btn-default btn-xs" href="{{url_for('edit_restaurant', restaurant_id=i.id)}}"-->
+                <!--role="button">Edit</a>-->
+                <!--<a class="btn btn-default btn-xs" href="{{url_for('delete_restaurant', restaurant_id=i.id)}}"-->
+                <!--role="button">Delete</a>-->
                 <!--</h5>-->
             </div>
             {% endfor %}
