@@ -13,3 +13,12 @@ body {
     /* background-color: lightblue; */
     margin-top: 20px;
 }
+
+.restaurant {
+    min-height: 50px;
+    background-color: white;
+}
+
+.restaurantName {
+    padding: 5px;
+}
