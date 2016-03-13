@@ -84,7 +84,7 @@ def new_menu_item(restaurant_id):
         menu_item = MenuItem(name=request.form['name'],
                              course=request.form['course'],
                              description=request.form['description'],
-                             price=request.form['price'],
+                             price="$" + request.form['price'],
                              restaurant_id=restaurant_id)
         session.add(menu_item)
         session.commit()
