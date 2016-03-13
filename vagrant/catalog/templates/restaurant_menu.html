@@ -29,6 +29,9 @@
 
         <div class="col-md-4"></div>
         <div class="col-md-4">
+            <div class="page-header header">
+                <h2>{{restaurant.name}}</h2>
+            </div>
             <div class="alert alert-success alert-dismissible" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
                         aria-hidden="true">&times;</span></button>
@@ -39,11 +42,6 @@
                 {% endfor %}
                 {% endif %}
                 {% endwith %}
-            </div>
-            <div class="restaurant">
-                <div class="restaurantName">
-                    <h3>{{restaurant.name}}</h3>
-                </div>
             </div>
             {% for i in items %}
             <div class="restaurant">

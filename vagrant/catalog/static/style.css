@@ -9,6 +9,10 @@ body {
     background-color: #e9eaed;
 }
 
+.header {
+    text-align: center;
+}
+
 .navbar {
     margin-top: 20px;
 }
