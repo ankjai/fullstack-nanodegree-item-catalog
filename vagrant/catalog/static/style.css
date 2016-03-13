@@ -38,3 +38,8 @@ body {
 .btn {
     border: none;
 }
+
+.cancel-btn {
+    text-decoration: none;
+    color: inherit;
+}
