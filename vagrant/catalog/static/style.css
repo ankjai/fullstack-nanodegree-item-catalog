@@ -1,0 +1,45 @@
+* {
+    /* border: solid black 1px !important; */
+}
+
+body {
+    margin-left: 5%;
+    margin-right: 5%;
+    font-family: sans-serif;
+    background-color: #e9eaed;
+}
+
+.header {
+    text-align: center;
+}
+
+.navbar {
+    margin-top: 20px;
+}
+
+.restaurant {
+    margin: 20px;
+    border: solid #d6d6d6 1px;
+    border-radius: 5px;
+    background-color: white;
+    overflow: auto;
+}
+
+.restaurantName {
+    max-width: 90%;
+    float: left;
+    padding: 5px;
+}
+
+.dropdown {
+    float: right;
+}
+
+.btn {
+    border: none;
+}
+
+.cancel-btn {
+    text-decoration: none;
+    color: inherit;
+}

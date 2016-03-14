@@ -84,7 +84,7 @@ def new_menu_item(restaurant_id):
         menu_item = MenuItem(name=request.form['name'],
                              course=request.form['course'],
                              description=request.form['description'],
-                             price=request.form['price'],
+                             price="$" + request.form['price'],
                              restaurant_id=restaurant_id)
         session.add(menu_item)
         session.commit()
@@ -98,15 +98,23 @@ def new_menu_item(restaurant_id):
 @app.route('/restaurant/<int:restaurant_id>/menu/<int:menu_id>/edit/', methods=['GET', 'POST'])
 def edit_menu_item(restaurant_id, menu_id):
     edited_item = session.query(MenuItem).filter_by(id=menu_id).one()
+    edited_item_price = edited_item.price[1:]
     if request.method == 'POST':
         if request.form['name']:
             edited_item.name = request.form['name']
+        if request.form['course']:
+            edited_item.course = request.form['course']
+        if request.form['description']:
+            edited_item.description = request.form['description']
+        if request.form['price']:
+            edited_item.price = "$" + request.form['price']
         session.add(edited_item)
         session.commit()
         flash("Menu item updated.")
         return redirect(url_for('view_restaurant_menu', restaurant_id=restaurant_id))
     else:
-        return render_template('menu_edit.html', restaurant_id=restaurant_id, menu_id=menu_id, item=edited_item)
+        return render_template('menu_edit.html', restaurant_id=restaurant_id, menu_id=menu_id, item=edited_item,
+                               item_price=edited_item_price)
 
 
 @app.route('/restaurant/<int:restaurant_id>/menu/<int:menu_id>/delete/', methods=['GET', 'POST'])
@@ -128,6 +136,6 @@ def view_menu_item_json(restaurant_id, menu_id):
 
 
 if __name__ == '__main__':
-    app.secret_key = 'super_secret_key'
+    app.secret_key = 'super_secret_key_1'
     app.debug = True
     app.run(host='0.0.0.0', port=8000)
