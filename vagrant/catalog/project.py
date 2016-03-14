@@ -35,13 +35,11 @@ session = DBSession()
 def show_login():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in xrange(32))
     login_session['state'] = state
-    print "state:", state
     return render_template('login.html', state=state)
 
 
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
-    print "in gconnect()"
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)
         response.headers['Content-Type'] = 'application/json'
@@ -95,7 +93,7 @@ def gconnect():
         return response
 
     # Store the access token in the session for later use.
-    login_session['credentials'] = credentials
+    login_session['credentials'] = credentials.access_token
     login_session['gplus_id'] = gplus_id
 
     # Get user info

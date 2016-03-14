@@ -33,13 +33,13 @@
                       data-approvalprompt="force">
                 </span>
             </div>
+            <div id="result"></div>
         </div>
         <div class="col-md-4"></div>
     </div>
 </div>
 <script>
     function signInCallback(authResult) {
-    console.log("signInCallback");
     if (authResult['code']) {
         // hide sign-in button once user is authorized
         $('#signInButton').attr('style', 'display:none');
@@ -50,7 +50,7 @@
                 contentType: 'application/octet-stream; charset=utf-8',
                 data: authResult['code'],
             })
-            .done(function() {
+            .done(function(result) {
                 console.log("success");
                 $('#result').html('Login successful!</br>' + result + '</br>Redirecting...');
                 setTimeout(function() {
