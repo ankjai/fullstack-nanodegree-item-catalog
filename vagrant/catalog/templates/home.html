@@ -28,7 +28,15 @@
                     {% if not session.username %}
                     <li><a href="{{url_for('show_login')}}">Login</a></li>
                     {% else %}
-                    <li><a href="{{url_for('show_logout')}}">Logout</a></li>
+                    <li><a>{{session.username}}</a></li>
+                    <li class="dropdown">
+                        <img src="{{session.picture}}" alt="profile_pic" class="dropdown-toggle profile-pic"
+                             data-toggle="dropdown"
+                             role="button" aria-haspopup="true" aria-expanded="false">
+                        <ul class="dropdown-menu">
+                            <li><a href="{{url_for('show_logout')}}">Logout</a></li>
+                        </ul>
+                    </li>
                     {% endif %}
                 </ul>
             </div>

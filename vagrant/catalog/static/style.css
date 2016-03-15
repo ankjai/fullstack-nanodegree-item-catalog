@@ -43,3 +43,10 @@ body {
     text-decoration: none;
     color: inherit;
 }
+
+.profile-pic {
+    width: 50px;
+    border: solid 1px;
+    border-radius: 25px;
+    padding: 3px;
+}
