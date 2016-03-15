@@ -18,6 +18,23 @@
                     <span class="glyphicon glyphicon-home" aria-hidden="true"/>
                 </a>
             </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    {% if not session.username %}
+                    <li><a href="{{url_for('show_login')}}">Login</a></li>
+                    {% else %}
+                    <li><a>{{session.username}}</a></li>
+                    <li class="dropdown">
+                        <img src="{{session.picture}}" alt="profile_pic" class="dropdown-toggle profile-pic"
+                             data-toggle="dropdown"
+                             role="button" aria-haspopup="true" aria-expanded="false">
+                        <ul class="dropdown-menu">
+                            <li><a href="{{url_for('show_logout')}}">Logout</a></li>
+                        </ul>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
         </nav>
         <div class="col-md-4"></div>
         <div class="col-md-4">
