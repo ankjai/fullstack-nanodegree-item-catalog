@@ -12,7 +12,7 @@ from oauth2client.client import flow_from_clientsecrets
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from database_setup import Base, Restaurant, MenuItem
+from database_setup import Base, Restaurant, MenuItem, User
 
 app = Flask(__name__)
 
@@ -109,6 +109,11 @@ def gconnect():
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
 
+    # check if user persist in db
+    # else create user
+    if get_user_id(login_session['email']) is None:
+        login_session['user_id'] = create_user(login_session)
+
     output = ''
     output += '<h1>Welcome, '
     output += login_session['username']
@@ -175,11 +180,8 @@ def new_restaurant():
     if login_session.get('username') is None:
         return redirect('/login')
 
-    for s in login_session:
-        print "s:", s, " ", login_session[s]
-
     if request.method == 'POST':
-        restaurant = Restaurant(name=request.form['name'])
+        restaurant = Restaurant(name=request.form['name'], user_id=login_session['user_id'])
         session.add(restaurant)
         session.commit()
         flash("New restaurant created.")
@@ -227,7 +229,8 @@ def new_menu_item(restaurant_id):
                              course=request.form['course'],
                              description=request.form['description'],
                              price="$" + request.form['price'],
-                             restaurant_id=restaurant_id)
+                             restaurant_id=restaurant_id,
+                             user_id=login_session['user_id'])
         session.add(menu_item)
         session.commit()
         flash("New menu item created.")
@@ -279,6 +282,29 @@ def delete_menu_item(restaurant_id, menu_id):
 def view_menu_item_json(restaurant_id, menu_id):
     item = session.query(MenuItem).filter_by(id=menu_id, restaurant_id=restaurant_id).one()
     return jsonify(MenuItem=item.serialize)
+
+
+def create_user(login_session):
+    new_user = User(name=login_session['username'], email=login_session['email'], image=login_session['picture'])
+    session.add(new_user)
+    session.commit()
+    user = session.query(User).filter_by(email=login_session['email']).one()
+    return user.id
+
+
+def get_user_info(user_id):
+    try:
+        return session.query(User).filter_by(id=user_id).one()
+    except:
+        return None
+
+
+def get_user_id(email):
+    try:
+        user = session.query(User).filter_by(email=email).one()
+        return user.id
+    except:
+        return None
 
 
 if __name__ == '__main__':
