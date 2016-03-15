@@ -20,7 +20,7 @@ CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())['web']['client_i
 
 # Create an engine that stores data in the local directory's
 # restaurantmenu.db file.
-engine = create_engine('sqlite:///restaurantmenu.db')
+engine = create_engine('sqlite:///restaurantapp.db')
 
 # Create all tables in the engine. This is equivalent to 'Create Table'
 # statement in SQL.
@@ -174,6 +174,10 @@ def view_restaurant_menu_json(restaurant_id):
 def new_restaurant():
     if login_session.get('username') is None:
         return redirect('/login')
+
+    for s in login_session:
+        print "s:", s, " ", login_session[s]
+
     if request.method == 'POST':
         restaurant = Restaurant(name=request.form['name'])
         session.add(restaurant)

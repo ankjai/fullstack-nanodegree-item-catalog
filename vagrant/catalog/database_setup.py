@@ -6,12 +6,22 @@ from sqlalchemy.orm import relationship, backref
 Base = declarative_base()
 
 
+class User(Base):
+    __tablename__ = 'user'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(80), nullable=False)
+    email = Column(String(80), nullable=False)
+    image = Column(String(250))
+
+
 class Restaurant(Base):
     __tablename__ = 'restaurant'
     # here we define columns for the table restaurant
     # these columns are also python instance attribute
     name = Column(String(80), nullable=False)
     id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+    user = relationship(User, backref=backref('restaurant', cascade='all,delete'))
 
 
 class MenuItem(Base):
@@ -25,6 +35,8 @@ class MenuItem(Base):
     price = Column(String(8))
     restaurant_id = Column(Integer, ForeignKey('restaurant.id'), nullable=False)
     restaurant = relationship(Restaurant, backref=backref("menu_item", cascade="all,delete"))
+    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+    user = relationship(User, backref=backref('menu_item', cascade='all,delete'))
 
     @property
     def serialize(self):
@@ -38,8 +50,8 @@ class MenuItem(Base):
 
 
 # Create an engine that stores data in the local directory's
-# restaurantmenu.db file.
-engine = create_engine('sqlite:///restaurantmenu.db')
+# restaurantapp.db file.
+engine = create_engine('sqlite:///restaurantapp.db')
 
 # Create all tables in the engine. This is equivalent to 'Create Table'
 # statement in SQL.
