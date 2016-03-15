@@ -24,6 +24,23 @@
                         <a href="{{ url_for('new_menu_item',restaurant_id=restaurant_id) }}">Add New Menu Item</a>
                     </li>
                 </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    {% if session.username %}
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">Restaurant<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{{ url_for('edit_restaurant',restaurant_id=restaurant_id) }}">Edit</a></li>
+                            <li><a href="{{ url_for('delete_restaurant',restaurant_id=restaurant_id) }}">Delete</a></li>
+                        </ul>
+                    </li>
+                    {% endif %}
+                    {% if not session.username %}
+                    <li><a href="{{url_for('show_login')}}">Login</a></li>
+                    {% else %}
+                    <li><a href="{{url_for('show_logout')}}">Logout</a></li>
+                    {% endif %}
+                </ul>
             </div>
         </nav>
 
@@ -32,17 +49,27 @@
             <div class="page-header header">
                 <h2>{{restaurant.name}}</h2>
             </div>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            {% if category == 'success' %}
             <div class="alert alert-success alert-dismissible" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
                         aria-hidden="true">&times;</span></button>
-                {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                {% for message in messages %}
                 <p><strong>Success! </strong>{{ message }}</p>
-                {% endfor %}
-                {% endif %}
-                {% endwith %}
             </div>
+            {% endif %}
+            {% if category == 'error' %}
+            <div class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <p><strong>Error! </strong>{{ message }}</p>
+            </div>
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
             {% for i in items %}
             <div class="restaurant">
                 <div class="restaurantName">
