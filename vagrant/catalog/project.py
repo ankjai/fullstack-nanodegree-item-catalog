@@ -121,7 +121,7 @@ def gconnect():
     output += '<img src="'
     output += login_session['picture']
     output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
-    flash("you are now logged in as %s" % login_session['username'])
+    flash("Logged in as %s" % login_session['username'], category='success')
     print "done!"
     return output
 
@@ -185,7 +185,7 @@ def new_restaurant():
         restaurant = Restaurant(name=request.form['name'], user_id=login_session['user_id'])
         session.add(restaurant)
         session.commit()
-        flash("New restaurant created.")
+        flash("New restaurant created.", category='success')
         return redirect(url_for('list_restaurants'))
     else:
         return render_template('restaurant_new.html')
@@ -201,7 +201,7 @@ def edit_restaurant(restaurant_id):
             edited_restaurant.name = request.form['name']
         session.add(edited_restaurant)
         session.commit()
-        flash("Updated restaurant info.")
+        flash("Updated restaurant info.", category='success')
         return redirect(url_for('list_restaurants'))
     else:
         return render_template('restaurant_edit.html', restaurant=edited_restaurant)
@@ -215,7 +215,7 @@ def delete_restaurant(restaurant_id):
     if request.method == 'POST':
         session.delete(restaurant_to_delete)
         session.commit()
-        flash("Restaurant deleted.")
+        flash("Restaurant deleted.", category='success')
         return redirect(url_for('list_restaurants'))
     else:
         return render_template('restaurant_delete.html', restaurant=restaurant_to_delete)
@@ -234,7 +234,7 @@ def new_menu_item(restaurant_id):
                              user_id=login_session['user_id'])
         session.add(menu_item)
         session.commit()
-        flash("New menu item created.")
+        flash("New menu item created.", category='success')
         return redirect(url_for('view_restaurant_menu', restaurant_id=restaurant_id))
     else:
         restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
@@ -258,7 +258,7 @@ def edit_menu_item(restaurant_id, menu_id):
             edited_item.price = "$" + request.form['price']
         session.add(edited_item)
         session.commit()
-        flash("Menu item updated.")
+        flash("Menu item updated.", category='success')
         return redirect(url_for('view_restaurant_menu', restaurant_id=restaurant_id))
     else:
         return render_template('menu_edit.html', restaurant_id=restaurant_id, menu_id=menu_id, item=edited_item,
@@ -273,7 +273,7 @@ def delete_menu_item(restaurant_id, menu_id):
     if request.method == 'POST':
         session.delete(item_to_delete)
         session.commit()
-        flash("Menu item deleted.")
+        flash("Menu item deleted.", category='success')
         return redirect(url_for('view_restaurant_menu', restaurant_id=restaurant_id))
     else:
         return render_template('menu_delete.html', restaurant_id=restaurant_id, menu_id=menu_id, item=item_to_delete)
