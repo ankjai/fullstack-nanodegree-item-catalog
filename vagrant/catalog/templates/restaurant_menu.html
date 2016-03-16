@@ -38,7 +38,7 @@
                     {% if not session.username %}
                     <li><a href="{{url_for('show_login')}}">Login</a></li>
                     {% else %}
-                    <li><a>{{session.username}}</a></li>
+                    <p class="navbar-text">{{session.username}}</p>
                     <li class="dropdown">
                         <img src="{{session.picture}}" alt="profile_pic" class="dropdown-toggle profile-pic"
                              data-toggle="dropdown"
