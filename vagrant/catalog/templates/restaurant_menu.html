@@ -86,6 +86,7 @@
                     <p>{{i.description}}</p>
                     <p>{{i.price}}</p>
                 </div>
+                {% if session.username %}
                 <div class="dropdown">
                     <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="true">
@@ -100,6 +101,7 @@
                         </li>
                     </ul>
                 </div>
+                {% endif %}
             </div>
             {% endfor %}
         </div>
