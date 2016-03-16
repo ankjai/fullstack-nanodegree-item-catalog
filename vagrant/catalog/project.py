@@ -238,7 +238,12 @@ def new_menu_item(restaurant_id):
         return redirect(url_for('view_restaurant_menu', restaurant_id=restaurant_id))
     else:
         restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
-        return render_template('menu_new.html', restaurant_id=restaurant_id, restaurant=restaurant)
+        if login_session['user_id'] != restaurant.user_id:
+            flash('You are not the owner of this restaurant.', category='warning')
+            flash('You do not have authorization to add menu item.', category='warning')
+            return redirect(url_for('view_restaurant_menu', restaurant_id=restaurant_id))
+        else:
+            return render_template('menu_new.html', restaurant_id=restaurant_id, restaurant=restaurant)
 
 
 @app.route('/restaurant/<int:restaurant_id>/menu/<int:menu_id>/edit/', methods=['GET', 'POST'])

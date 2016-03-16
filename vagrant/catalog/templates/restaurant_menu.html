@@ -26,6 +26,7 @@
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     {% if session.username %}
+                    {% if restaurant.user_id == session.user_id %}
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                            aria-expanded="false">Restaurant<span class="caret"></span></a>
@@ -34,6 +35,7 @@
                             <li><a href="{{ url_for('delete_restaurant',restaurant_id=restaurant_id) }}">Delete</a></li>
                         </ul>
                     </li>
+                    {% endif %}
                     {% endif %}
                     {% if not session.username %}
                     <li><a href="{{url_for('show_login')}}">Login</a></li>
@@ -67,6 +69,13 @@
                 <p><strong>Success! </strong>{{ message }}</p>
             </div>
             {% endif %}
+            {% if category == 'warning' %}
+            <div class="alert alert-warning alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <p><strong>Warning! </strong>{{ message }}</p>
+            </div>
+            {% endif %}
             {% if category == 'error' %}
             <div class="alert alert-danger alert-dismissible" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
@@ -87,6 +96,7 @@
                     <p>{{i.price}}</p>
                 </div>
                 {% if session.username %}
+                {% if restaurant.user_id == session.user_id %}
                 <div class="dropdown">
                     <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="true">
@@ -101,6 +111,7 @@
                         </li>
                     </ul>
                 </div>
+                {% endif %}
                 {% endif %}
             </div>
             {% endfor %}
