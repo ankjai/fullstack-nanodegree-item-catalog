@@ -22,9 +22,10 @@
         <div class="col-md-4"></div>
         <div class="col-md-4">
             <div class="page-header header">
-                <h2>Logout</h2>
+                <h3>{{session.username}}</h3>
+                <img src="{{session.picture}}" alt="profile-pic" class="profile-pic">
             </div>
-            <form action="{{url_for('gdisconnect')}}" class="form-horizontal" method="post">
+            <form action="{{url_for('gdisconnect')}}" method="post" style="text-align:center;">
                 <div class="form-group">
                     <span class="help-block">Are you sure you want to logout?</span>
                 </div>
