@@ -9,6 +9,7 @@ body {
     background-color: #e9eaed;
 }
 
+.form-center,
 .header {
     text-align: center;
 }
@@ -39,7 +40,8 @@ body {
     border: none;
 }
 
-.cancel-btn {
+.cancel-btn,
+a:hover {
     text-decoration: none;
     color: inherit;
 }

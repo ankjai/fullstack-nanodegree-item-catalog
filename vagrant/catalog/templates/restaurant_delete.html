@@ -42,8 +42,7 @@
             <div class="page-header header">
                 <h2>Delete Restaurant</h2>
             </div>
-            <form action="{{url_for('delete_restaurant', restaurant_id=restaurant.id)}}" class="form-horizontal"
-                  method="post">
+            <form action="{{url_for('delete_restaurant', restaurant_id=restaurant.id)}}" class="form-center" method="post">
                 <div class="form-group">
                     <span class="help-block">Are you sure you want to delete {{restaurant.name}}?</span>
                 </div>
