@@ -21,7 +21,13 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     {% if not session.username %}
-                    <li><a href="{{url_for('show_login')}}">Login</a></li>
+                    <p class="navbar-text">Login</p>
+                    <li>
+                        <a href="{{url_for('show_login')}}" style="padding:0px;">
+                            <img src="{{ url_for('static', filename='user6.png') }}"
+                                 alt="dummy-profile-pic" class="profile-pic" style="background-color:white;">
+                        </a>
+                    </li>
                     {% else %}
                     <p class="navbar-text">{{session.username}}</p>
                     <li class="dropdown">
