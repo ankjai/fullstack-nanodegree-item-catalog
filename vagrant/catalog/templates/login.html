@@ -32,6 +32,13 @@
                       data-callback="signInCallback"
                       data-approvalprompt="force">
                 </span>
+                <span>
+                    <button>
+                        <fb:login-button scope="public_profile,email" onlogin="sendTokenToServer();">
+                            <a href='javascript:sendTokenToServer()'>Login with Facebook</a>
+                        </fb:login-button>
+                    </button>
+                </span>
             </div>
             <div id="result"></div>
         </div>
@@ -65,6 +72,23 @@
             });
     }
 }
+</script>
+<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '1740197756191851',
+      xfbml      : true,
+      version    : 'v2.5'
+    });
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
 </script>
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
