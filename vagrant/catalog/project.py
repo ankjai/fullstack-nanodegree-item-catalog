@@ -12,7 +12,7 @@ from oauth2client.client import flow_from_clientsecrets
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from database_setup import Base, Restaurant, MenuItem
+from database_setup import Base, Restaurant, MenuItem, User
 
 app = Flask(__name__)
 
@@ -20,7 +20,7 @@ CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())['web']['client_i
 
 # Create an engine that stores data in the local directory's
 # restaurantmenu.db file.
-engine = create_engine('sqlite:///restaurantmenu.db')
+engine = create_engine('sqlite:///restaurantapp.db')
 
 # Create all tables in the engine. This is equivalent to 'Create Table'
 # statement in SQL.
@@ -109,6 +109,13 @@ def gconnect():
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
 
+    # check if user persist in db
+    # else create user
+    if get_user_id(login_session['email']) is None:
+        login_session['user_id'] = create_user(login_session)
+    else:
+        login_session['user_id'] = get_user_id(login_session['email'])
+
     output = ''
     output += '<h1>Welcome, '
     output += login_session['username']
@@ -116,12 +123,17 @@ def gconnect():
     output += '<img src="'
     output += login_session['picture']
     output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
-    flash("you are now logged in as %s" % login_session['username'])
+    flash("Logged in as %s" % login_session['username'], category='success')
     print "done!"
     return output
 
 
 @app.route('/logout')
+def show_logout():
+    return render_template('logout.html')
+
+
+@app.route('/gdisconnect', methods=['POST'])
 def gdisconnect():
     access_token = login_session.get('access_token')
     if access_token is None:
@@ -132,21 +144,17 @@ def gdisconnect():
     url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token']
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
-    print 'result is '
-    print result
     if result['status'] == '200':
         del login_session['access_token']
         del login_session['gplus_id']
         del login_session['username']
         del login_session['email']
         del login_session['picture']
-        response = make_response(json.dumps('Successfully disconnected.'), 200)
-        response.headers['Content-Type'] = 'application/json'
-        return response
+        flash("logged out.", category='success')
+        return redirect('/restaurant')
     else:
-        response = make_response(json.dumps('Failed to revoke token for given user.', 400))
-        response.headers['Content-Type'] = 'application/json'
-        return response
+        flash('Failed to revoke token for given user.', category='error')
+        return redirect('/restaurant')
 
 
 @app.route('/')
@@ -174,11 +182,12 @@ def view_restaurant_menu_json(restaurant_id):
 def new_restaurant():
     if login_session.get('username') is None:
         return redirect('/login')
+
     if request.method == 'POST':
-        restaurant = Restaurant(name=request.form['name'])
+        restaurant = Restaurant(name=request.form['name'], user_id=login_session['user_id'])
         session.add(restaurant)
         session.commit()
-        flash("New restaurant created.")
+        flash("New restaurant created.", category='success')
         return redirect(url_for('list_restaurants'))
     else:
         return render_template('restaurant_new.html')
@@ -194,7 +203,7 @@ def edit_restaurant(restaurant_id):
             edited_restaurant.name = request.form['name']
         session.add(edited_restaurant)
         session.commit()
-        flash("Updated restaurant info.")
+        flash("Updated restaurant info.", category='success')
         return redirect(url_for('list_restaurants'))
     else:
         return render_template('restaurant_edit.html', restaurant=edited_restaurant)
@@ -208,7 +217,7 @@ def delete_restaurant(restaurant_id):
     if request.method == 'POST':
         session.delete(restaurant_to_delete)
         session.commit()
-        flash("Restaurant deleted.")
+        flash("Restaurant deleted.", category='success')
         return redirect(url_for('list_restaurants'))
     else:
         return render_template('restaurant_delete.html', restaurant=restaurant_to_delete)
@@ -223,14 +232,20 @@ def new_menu_item(restaurant_id):
                              course=request.form['course'],
                              description=request.form['description'],
                              price="$" + request.form['price'],
-                             restaurant_id=restaurant_id)
+                             restaurant_id=restaurant_id,
+                             user_id=login_session['user_id'])
         session.add(menu_item)
         session.commit()
-        flash("New menu item created.")
+        flash("New menu item created.", category='success')
         return redirect(url_for('view_restaurant_menu', restaurant_id=restaurant_id))
     else:
         restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
-        return render_template('menu_new.html', restaurant_id=restaurant_id, restaurant=restaurant)
+        if login_session['user_id'] != restaurant.user_id:
+            flash('You are not the owner of this restaurant.', category='warning')
+            flash('You do not have authorization to add menu item.', category='warning')
+            return redirect(url_for('view_restaurant_menu', restaurant_id=restaurant_id))
+        else:
+            return render_template('menu_new.html', restaurant_id=restaurant_id, restaurant=restaurant)
 
 
 @app.route('/restaurant/<int:restaurant_id>/menu/<int:menu_id>/edit/', methods=['GET', 'POST'])
@@ -250,7 +265,7 @@ def edit_menu_item(restaurant_id, menu_id):
             edited_item.price = "$" + request.form['price']
         session.add(edited_item)
         session.commit()
-        flash("Menu item updated.")
+        flash("Menu item updated.", category='success')
         return redirect(url_for('view_restaurant_menu', restaurant_id=restaurant_id))
     else:
         return render_template('menu_edit.html', restaurant_id=restaurant_id, menu_id=menu_id, item=edited_item,
@@ -265,7 +280,7 @@ def delete_menu_item(restaurant_id, menu_id):
     if request.method == 'POST':
         session.delete(item_to_delete)
         session.commit()
-        flash("Menu item deleted.")
+        flash("Menu item deleted.", category='success')
         return redirect(url_for('view_restaurant_menu', restaurant_id=restaurant_id))
     else:
         return render_template('menu_delete.html', restaurant_id=restaurant_id, menu_id=menu_id, item=item_to_delete)
@@ -275,6 +290,29 @@ def delete_menu_item(restaurant_id, menu_id):
 def view_menu_item_json(restaurant_id, menu_id):
     item = session.query(MenuItem).filter_by(id=menu_id, restaurant_id=restaurant_id).one()
     return jsonify(MenuItem=item.serialize)
+
+
+def create_user(login_session):
+    new_user = User(name=login_session['username'], email=login_session['email'], image=login_session['picture'])
+    session.add(new_user)
+    session.commit()
+    user = session.query(User).filter_by(email=login_session['email']).one()
+    return user.id
+
+
+def get_user_info(user_id):
+    try:
+        return session.query(User).filter_by(id=user_id).one()
+    except:
+        return None
+
+
+def get_user_id(email):
+    try:
+        user = session.query(User).filter_by(email=email).one()
+        return user.id
+    except:
+        return None
 
 
 if __name__ == '__main__':

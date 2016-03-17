@@ -2,3 +2,4 @@
 vagrant/.vagrant/
 **/*.pyc
 vagrant/catalog/restaurantmenu.db
+vagrant/catalog/restaurantapp.db
