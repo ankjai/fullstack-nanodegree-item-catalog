@@ -113,6 +113,8 @@ def gconnect():
     # else create user
     if get_user_id(login_session['email']) is None:
         login_session['user_id'] = create_user(login_session)
+    else:
+        login_session['user_id'] = get_user_id(login_session['email'])
 
     output = ''
     output += '<h1>Welcome, '
