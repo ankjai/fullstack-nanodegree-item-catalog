@@ -235,7 +235,7 @@ def g_disconnect(access_token):
 def fb_disconnect(access_token):
     url = 'https://graph.facebook.com/%s/permissions?access_token=%s' % (login_session['facebook_id'], access_token)
     h = httplib2.Http()
-    check_response(h.request(url, 'DELETE')[1])
+    check_response(h.request(url, 'DELETE')[0])
     del login_session['facebook_id']
 
 
