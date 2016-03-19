@@ -32,6 +32,13 @@
                       data-callback="signInCallback"
                       data-approvalprompt="force">
                 </span>
+                <span>
+                    <button>
+                        <fb:login-button scope="public_profile,email" onlogin="sendTokenToServer()">
+                            <a href='javascript:sendTokenToServer()'>Login with Facebook</a>
+                        </fb:login-button>
+                    </button>
+                </span>
             </div>
             <div id="result"></div>
         </div>
@@ -64,6 +71,56 @@
                 console.log("complete");
             });
     }
+}
+</script>
+<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '1740197756191851',
+      xfbml      : true,
+      version    : 'v2.5'
+    });
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+
+   function sendTokenToServer() {
+    var access_token = FB.getAuthResponse()['accessToken'];
+    console.log(access_token)
+    console.log('Welcome!  Fetching your information.... ');
+    FB.api('/me', function(response) {
+        console.log('Successful login for: ' + response.name);
+        $.ajax({
+                url: '/fbconnect?state={{state}}',
+                type: 'POST',
+                data: access_token,
+                contentType: 'application/octet-stream; charset=utf-8',
+            })
+            .done(function(result) {
+                console.log("success");
+                // Handle or verify the server response if necessary.
+                if (result) {
+                    $('#result').html('Login Successful!</br>' + result + '</br>Redirecting...')
+                    setTimeout(function() {
+                        window.location.href = "/restaurant";
+                    }, 4000);
+                } else {
+                    $('#result').html('Failed to make a server-side call. Check your configuration and console.');
+                }
+            })
+            .fail(function() {
+                console.log("error");
+            })
+            .always(function() {
+                console.log("complete");
+            });
+    });
 }
 </script>
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
