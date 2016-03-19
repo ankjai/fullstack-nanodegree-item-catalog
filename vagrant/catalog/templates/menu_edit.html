@@ -5,6 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Edit Menu Item</title>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
           integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
@@ -55,7 +57,20 @@
                 </div>
                 <div class="form-group">
                     <label for="course1">Course:</label>
-                    <input type="text" class="form-control" id="course1" name="course" placeholder="{{item.course}}">
+                    <div id="course1" data-value="{{item.course}}">
+                        <label class="radio-inline">
+                            <input type="radio" name="course" id="inlineRadio1" value="Appetizer"> Appetizer
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="course" id="inlineRadio2" value="Entree"> Entree
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="course" id="inlineRadio3" value="Dessert"> Dessert
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="course" id="inlineRadio4" value="Beverage"> Beverage
+                        </label>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="desc1">Description:</label>
@@ -80,8 +95,12 @@
         <div class="col-md-4"></div>
     </div>
 </div>
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+    (function() {
+        var course = $('#course1').attr('data-value');
+        $('input[value=' + course + ']').prop("checked", true);
+    }());
+</script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
         integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
         crossorigin="anonymous"></script>
