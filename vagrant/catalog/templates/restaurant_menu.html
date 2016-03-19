@@ -5,6 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Restaurant</title>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
           integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
@@ -91,70 +93,74 @@
         {% endif %}
         {% endwith %}
         <div class="col-md-4">
-            <h4>Appetizers:</h4>
-            {% for i in items %}
-            {% if i.course == 'Appetizer' %}
-            <div class="restaurant">
-                <div class="restaurantName">
-                    <h4>{{i.name}}</h4>
-                    <p>{{i.course}}</p>
-                    <p>{{i.description}}</p>
-                    <p>{{i.price}}</p>
-                </div>
-                {% if session.username %}
-                {% if restaurant.user_id == session.user_id %}
-                <div class="dropdown">
-                    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="true">
-                        <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-right">
-                        <li>
-                            <a href="{{url_for('edit_menu_item', restaurant_id=restaurant.id, menu_id=i.id)}}">Edit</a>
-                        </li>
-                        <li>
-                            <a href="{{url_for('delete_menu_item', restaurant_id=restaurant.id, menu_id=i.id)}}">Delete</a>
-                        </li>
-                    </ul>
+            <div id="appetizer">
+                <h4>Appetizers:</h4>
+                {% for i in items %}
+                {% if i.course == 'Appetizer' %}
+                <div class="restaurant">
+                    <div class="restaurantName">
+                        <h4>{{i.name}}</h4>
+                        <p>{{i.course}}</p>
+                        <p>{{i.description}}</p>
+                        <p>{{i.price}}</p>
+                    </div>
+                    {% if session.username %}
+                    {% if restaurant.user_id == session.user_id %}
+                    <div class="dropdown">
+                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="true">
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li>
+                                <a href="{{url_for('edit_menu_item', restaurant_id=restaurant.id, menu_id=i.id)}}">Edit</a>
+                            </li>
+                            <li>
+                                <a href="{{url_for('delete_menu_item', restaurant_id=restaurant.id, menu_id=i.id)}}">Delete</a>
+                            </li>
+                        </ul>
+                    </div>
+                    {% endif %}
+                    {% endif %}
                 </div>
                 {% endif %}
-                {% endif %}
+                {% endfor %}
             </div>
-            {% endif %}
-            {% endfor %}
         </div>
         <div class="col-md-4">
-            <h4>Entree:</h4>
-            {% for i in items %}
-            {% if i.course == 'Entree' %}
-            <div class="restaurant">
-                <div class="restaurantName">
-                    <h4>{{i.name}}</h4>
-                    <p>{{i.course}}</p>
-                    <p>{{i.description}}</p>
-                    <p>{{i.price}}</p>
-                </div>
-                {% if session.username %}
-                {% if restaurant.user_id == session.user_id %}
-                <div class="dropdown">
-                    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="true">
-                        <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-right">
-                        <li>
-                            <a href="{{url_for('edit_menu_item', restaurant_id=restaurant.id, menu_id=i.id)}}">Edit</a>
-                        </li>
-                        <li>
-                            <a href="{{url_for('delete_menu_item', restaurant_id=restaurant.id, menu_id=i.id)}}">Delete</a>
-                        </li>
-                    </ul>
+            <div id="entree">
+                <h4>Entree:</h4>
+                {% for i in items %}
+                {% if i.course == 'Entree' %}
+                <div class="restaurant">
+                    <div class="restaurantName">
+                        <h4>{{i.name}}</h4>
+                        <p>{{i.course}}</p>
+                        <p>{{i.description}}</p>
+                        <p>{{i.price}}</p>
+                    </div>
+                    {% if session.username %}
+                    {% if restaurant.user_id == session.user_id %}
+                    <div class="dropdown">
+                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="true">
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li>
+                                <a href="{{url_for('edit_menu_item', restaurant_id=restaurant.id, menu_id=i.id)}}">Edit</a>
+                            </li>
+                            <li>
+                                <a href="{{url_for('delete_menu_item', restaurant_id=restaurant.id, menu_id=i.id)}}">Delete</a>
+                            </li>
+                        </ul>
+                    </div>
+                    {% endif %}
+                    {% endif %}
                 </div>
                 {% endif %}
-                {% endif %}
+                {% endfor %}
             </div>
-            {% endif %}
-            {% endfor %}
         </div>
         <div class="col-md-4">
             <div id="dessert">
@@ -226,8 +232,26 @@
         </div>
     </div>
 </div>
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+    (function() {
+    // appetizer
+    if ($('#appetizer').find('.restaurant').length == 0) {
+        $('#appetizer').css('display', 'none');
+    }
+    // entree
+    if ($('#entree').find('.restaurant').length == 0) {
+        $('#entree').css('display', 'none');
+    }
+    // dessert
+    if ($('#dessert').find('.restaurant').length == 0) {
+        $('#dessert').css('display', 'none');
+    }
+    // beverage
+    if ($('#beverage').find('.restaurant').length == 0) {
+        $('#beverage').css('display', 'none');
+    }
+    }());
+</script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
         integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
         crossorigin="anonymous"></script>
