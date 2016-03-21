@@ -1,12 +1,15 @@
 import json
 import random
 import string
+from xml.dom import minidom
+from xml.etree.ElementTree import Element, SubElement, tostring
 
 import httplib2
 import requests
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask import make_response
 from flask import session as login_session
+from flask_restful import Api
 from oauth2client.client import FlowExchangeError
 from oauth2client.client import flow_from_clientsecrets
 from sqlalchemy import create_engine
@@ -15,6 +18,7 @@ from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Restaurant, MenuItem, User
 
 app = Flask(__name__)
+api = Api(app)
 
 CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())['web']['client_id']
 
@@ -250,6 +254,36 @@ def check_response(response):
 def list_restaurants():
     restaurants = session.query(Restaurant).all()
     return render_template('home.html', restaurants=restaurants)
+
+
+@app.route('/api/v1.0/restaurant')
+@api.representation('application/json')
+def list_restaurants_json():
+    restaurants = session.query(Restaurant).all()
+    resp = make_response(jsonify(Restaurant=[r.serialize for r in restaurants]), 200)
+    resp.headers.extend({})
+    return resp
+
+
+@app.route('/api/v1.0/restaurant')
+@api.representation('application/xml')
+def list_restaurants_xml():
+    restaurants = session.query(Restaurant).all()
+    resp = make_response(data_xml([r.serialize for r in restaurants]), 200)
+    resp.headers.extend({})
+    return resp
+
+
+def data_xml(restaurants):
+    root = Element('restaurants')
+    for rest_dict in restaurants:
+        restaurant_ele = SubElement(root, 'restaurant')
+        for key in rest_dict:
+            restaurant_info_ele = SubElement(restaurant_ele, key)
+            restaurant_info_ele.text = rest_dict[key]
+    raw = tostring(root, 'utf-8')
+    parsed = minidom.parseString(raw)
+    return parsed.toprettyxml(indent="  ")
 
 
 @app.route('/restaurant/<int:restaurant_id>/', methods=['GET'])

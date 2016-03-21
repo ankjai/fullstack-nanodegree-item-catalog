@@ -23,6 +23,13 @@ class Restaurant(Base):
     user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
     user = relationship(User, backref=backref('restaurant', cascade='all,delete'))
 
+    @property
+    def serialize(self):
+        return {
+            'name': self.name,
+            'id': str(self.id)
+        }
+
 
 class MenuItem(Base):
     __tablename__ = 'menu_item'
