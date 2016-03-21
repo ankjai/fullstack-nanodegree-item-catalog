@@ -261,9 +261,9 @@ def api_list_restaurants():
     restaurants = session.query(Restaurant).all()
 
     if request.headers['Accept'] == 'application/json':
-        return output_json([r.serialize for r in restaurants], 200, {'Content-Type': 'application/json'})
+        return output_json_restaurant([r.serialize for r in restaurants], 200, {'Content-Type': 'application/json'})
     elif request.headers['Accept'] == 'application/xml':
-        return output_xml([r.serialize for r in restaurants], 200, {'Content-Type': 'application/xml'})
+        return output_xml_restaurant([r.serialize for r in restaurants], 200, {'Content-Type': 'application/xml'})
     else:
         resp = make_response(jsonify({'error': 'Unsupported Media Type'}), 415)
         resp.headers.extend({})
@@ -271,20 +271,20 @@ def api_list_restaurants():
 
 
 @api.representation('application/json')
-def output_json(data, code, headers=None):
+def output_json_restaurant(data, code, headers=None):
     resp = make_response(jsonify(Restaurant=data), code)
     resp.headers.extend(headers or {})
     return resp
 
 
 @api.representation('application/xml')
-def output_xml(data, code, headers=None):
-    resp = make_response(data_xml(data), code)
+def output_xml_restaurant(data, code, headers=None):
+    resp = make_response(data_xml_restaurant(data), code)
     resp.headers.extend(headers or {})
     return resp
 
 
-def data_xml(restaurants):
+def data_xml_restaurant(restaurants):
     root = Element('restaurants')
     for rest_dict in restaurants:
         restaurant_ele = SubElement(root, 'restaurant')
