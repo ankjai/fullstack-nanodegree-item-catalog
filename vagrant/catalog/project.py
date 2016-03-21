@@ -256,21 +256,31 @@ def list_restaurants():
     return render_template('home.html', restaurants=restaurants)
 
 
-@app.route('/api/v1.0/restaurant')
-@api.representation('application/json')
-def list_restaurants_json():
+@app.route('/api/v1.0/restaurant', methods=['GET'])
+def api_list_restaurants():
     restaurants = session.query(Restaurant).all()
-    resp = make_response(jsonify(Restaurant=[r.serialize for r in restaurants]), 200)
-    resp.headers.extend({})
+
+    if request.headers['Accept'] == 'application/json':
+        return output_json([r.serialize for r in restaurants], 200, {'Content-Type': 'application/json'})
+    elif request.headers['Accept'] == 'application/xml':
+        return output_xml([r.serialize for r in restaurants], 200, {'Content-Type': 'application/xml'})
+    else:
+        resp = make_response(jsonify({'error': 'Unsupported Media Type'}), 415)
+        resp.headers.extend({})
+        return resp
+
+
+@api.representation('application/json')
+def output_json(data, code, headers=None):
+    resp = make_response(jsonify(Restaurant=data), code)
+    resp.headers.extend(headers or {})
     return resp
 
 
-@app.route('/api/v1.0/restaurant')
 @api.representation('application/xml')
-def list_restaurants_xml():
-    restaurants = session.query(Restaurant).all()
-    resp = make_response(data_xml([r.serialize for r in restaurants]), 200)
-    resp.headers.extend({})
+def output_xml(data, code, headers=None):
+    resp = make_response(data_xml(data), code)
+    resp.headers.extend(headers or {})
     return resp
 
 
