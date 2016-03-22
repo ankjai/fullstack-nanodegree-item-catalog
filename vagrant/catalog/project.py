@@ -293,7 +293,7 @@ def data_xml_restaurant(restaurants):
             restaurant_info_ele.text = rest_dict[key]
     raw = tostring(root, 'utf-8')
     parsed = minidom.parseString(raw)
-    return parsed.toprettyxml(indent="  ")
+    return parsed.toprettyxml(indent=" ")
 
 
 @app.route('/restaurant/<int:restaurant_id>/', methods=['GET'])
