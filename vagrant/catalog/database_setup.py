@@ -50,7 +50,7 @@ class MenuItem(Base):
         return {
             'name': self.name,
             'description': self.description,
-            'id': self.id,
+            'id': str(self.id),
             'price': self.price,
             'course': self.course
         }
