@@ -430,10 +430,20 @@ def delete_menu_item(restaurant_id, menu_id):
         return render_template('menu_delete.html', restaurant_id=restaurant_id, menu_id=menu_id, item=item_to_delete)
 
 
-@app.route('/restaurant/<int:restaurant_id>/menu/<int:menu_id>/JSON')
+@app.route('/api/v1.0/restaurant/<int:restaurant_id>/menu/<int:menu_id>', methods=['GET'])
 def view_menu_item_json(restaurant_id, menu_id):
     item = session.query(MenuItem).filter_by(id=menu_id, restaurant_id=restaurant_id).one()
-    return jsonify(MenuItem=item.serialize)
+
+    if request.headers['Accept'] == 'application/json':
+        data = jsonify(MenuItem=item.serialize)
+        return output_json(data, 200, {'Content-Type': 'application/json'})
+    elif request.headers['Accept'] == 'application/xml':
+        data = data_xml([item.serialize], 'menuitems', 'menuitem')
+        return output_xml(data, 200, {'Content-Type': 'application/xml'})
+    else:
+        resp = make_response(jsonify({'error': 'Unsupported Media Type'}), 415)
+        resp.headers.extend({})
+        return resp
 
 
 def create_user(login_session):
