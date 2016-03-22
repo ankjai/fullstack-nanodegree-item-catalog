@@ -1,12 +1,15 @@
 import json
 import random
 import string
+from xml.dom import minidom
+from xml.etree.ElementTree import Element, SubElement, tostring
 
 import httplib2
 import requests
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask import make_response
 from flask import session as login_session
+from flask_restful import Api
 from oauth2client.client import FlowExchangeError
 from oauth2client.client import flow_from_clientsecrets
 from sqlalchemy import create_engine
@@ -15,6 +18,7 @@ from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Restaurant, MenuItem, User
 
 app = Flask(__name__)
+api = Api(app)
 
 CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())['web']['client_id']
 
@@ -252,6 +256,48 @@ def list_restaurants():
     return render_template('home.html', restaurants=restaurants)
 
 
+@app.route('/api/v1.0/restaurant', methods=['GET'])
+def api_list_restaurants():
+    restaurants = session.query(Restaurant).all()
+
+    if request.headers['Accept'] == 'application/json':
+        data = jsonify(Restaurant=[r.serialize for r in restaurants])
+        return output_json(data, 200, {'Content-Type': 'application/json'})
+    elif request.headers['Accept'] == 'application/xml':
+        data = data_xml([r.serialize for r in restaurants], 'restaurants', 'restaurant')
+        return output_xml(data, 200, {'Content-Type': 'application/xml'})
+    else:
+        resp = make_response(jsonify({'error': 'Unsupported Media Type'}), 415)
+        resp.headers.extend({})
+        return resp
+
+
+@api.representation('application/json')
+def output_json(data, code, headers=None):
+    resp = make_response(data, code)
+    resp.headers.extend(headers or {})
+    return resp
+
+
+@api.representation('application/xml')
+def output_xml(data, code, headers=None):
+    resp = make_response(data, code)
+    resp.headers.extend(headers or {})
+    return resp
+
+
+def data_xml(data, root_ele, sub_root_ele):
+    root = Element(root_ele)
+    for _dict in data:
+        sub_root = SubElement(root, sub_root_ele)
+        for key in _dict:
+            data_ele = SubElement(sub_root, key)
+            data_ele.text = _dict[key]
+    raw = tostring(root, 'utf-8')
+    parsed = minidom.parseString(raw)
+    return parsed.toprettyxml(indent=" ")
+
+
 @app.route('/restaurant/<int:restaurant_id>/', methods=['GET'])
 @app.route('/restaurant/<int:restaurant_id>/menu/', methods=['GET'])
 def view_restaurant_menu(restaurant_id):
@@ -260,10 +306,20 @@ def view_restaurant_menu(restaurant_id):
     return render_template('restaurant_menu.html', restaurant=restaurant, items=items, restaurant_id=restaurant_id)
 
 
-@app.route('/restaurant/<int:restaurant_id>/menu/JSON')
-def view_restaurant_menu_json(restaurant_id):
+@app.route('/api/v1.0/restaurant/<int:restaurant_id>/menu', methods=['GET'])
+def api_view_restaurant_menu(restaurant_id):
     items = session.query(MenuItem).filter_by(restaurant_id=restaurant_id).all()
-    return jsonify(MenuItem=[i.serialize for i in items])
+
+    if request.headers['Accept'] == 'application/json':
+        data = jsonify(MenuItem=[i.serialize for i in items])
+        return output_json(data, 200, {'Content-Type': 'application/json'})
+    elif request.headers['Accept'] == 'application/xml':
+        data = data_xml([i.serialize for i in items], 'menuitems', 'menuitem')
+        return output_xml(data, 200, {'Content-Type': 'application/xml'})
+    else:
+        resp = make_response(jsonify({'error': 'Unsupported Media Type'}), 415)
+        resp.headers.extend({})
+        return resp
 
 
 @app.route('/restaurant/new/', methods=['GET', 'POST'])
@@ -374,10 +430,20 @@ def delete_menu_item(restaurant_id, menu_id):
         return render_template('menu_delete.html', restaurant_id=restaurant_id, menu_id=menu_id, item=item_to_delete)
 
 
-@app.route('/restaurant/<int:restaurant_id>/menu/<int:menu_id>/JSON')
+@app.route('/api/v1.0/restaurant/<int:restaurant_id>/menu/<int:menu_id>', methods=['GET'])
 def view_menu_item_json(restaurant_id, menu_id):
     item = session.query(MenuItem).filter_by(id=menu_id, restaurant_id=restaurant_id).one()
-    return jsonify(MenuItem=item.serialize)
+
+    if request.headers['Accept'] == 'application/json':
+        data = jsonify(MenuItem=item.serialize)
+        return output_json(data, 200, {'Content-Type': 'application/json'})
+    elif request.headers['Accept'] == 'application/xml':
+        data = data_xml([item.serialize], 'menuitems', 'menuitem')
+        return output_xml(data, 200, {'Content-Type': 'application/xml'})
+    else:
+        resp = make_response(jsonify({'error': 'Unsupported Media Type'}), 415)
+        resp.headers.extend({})
+        return resp
 
 
 def create_user(login_session):
