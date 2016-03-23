@@ -20,7 +20,9 @@ from database_setup import Base, Restaurant, MenuItem, User
 app = Flask(__name__)
 api = Api(app)
 
-CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())['web']['client_id']
+from catalog import restaurantviews
+
+CLIENT_ID = json.loads(open('catalog/client_secrets.json', 'r').read())['web']['client_id']
 
 # Create an engine that stores data in the local directory's
 # restaurantmenu.db file.
@@ -247,13 +249,6 @@ def check_response(response):
     if response['status'] != '200':
         flash('Failed to revoke token for given user.', category='error')
         return redirect('/restaurant')
-
-
-@app.route('/')
-@app.route('/restaurant')
-def list_restaurants():
-    restaurants = session.query(Restaurant).all()
-    return render_template('home.html', restaurants=restaurants)
 
 
 @app.route('/api/v1.0/restaurant', methods=['GET'])
