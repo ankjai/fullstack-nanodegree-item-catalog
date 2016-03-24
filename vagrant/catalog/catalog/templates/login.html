@@ -7,7 +7,9 @@
     <title>Login</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
           integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-social.css') }}">
 </head>
 <body>
 <div class="container-fluid">
@@ -22,23 +24,25 @@
 
         <div class="col-md-4"></div>
         <div class="col-md-4">
-            <div id="signInButton">
-                <span class="g-signin"
-                      data-scope="openid email"
-                      data-clientid="506344423173-ondopitsugevr6bpghn7vlipdi8r0bui.apps.googleusercontent.com"
-                      data-redirecturi="postmessage"
-                      data-accesstype="offline"
-                      data-cookiepolicy="single_host_origin"
-                      data-callback="signInCallback"
-                      data-approvalprompt="force">
-                </span>
-                <span>
-                    <button>
+            <div id="loginPanel">
+                <div class="page-header header">
+                    <h2>Login/Create Your Account:</h2>
+                </div>
+                <div id="socialLogin" class="form-center">
+                    <h5>Using Google:</h5>
+                    <div id="gSignInButton" class="customGPlusSignIn">
+                        <a class="btn btn-default btn-social btn-google">
+                            <span class="fa fa-google"></span> Sign in with Google
+                        </a>
+                    </div>
+                    <br>
+                    <h5>Using Facebook:</h5>
+                    <div id="fSignInButton">
                         <fb:login-button scope="public_profile,email" onlogin="sendTokenToServer()">
                             <a href='javascript:sendTokenToServer()'>Login with Facebook</a>
                         </fb:login-button>
-                    </button>
-                </span>
+                    </div>
+                </div>
             </div>
             <div id="result"></div>
         </div>
@@ -46,10 +50,23 @@
     </div>
 </div>
 <script>
+    function renderButton() {
+        gapi.signin.render('gSignInButton', {
+            'scope': 'openid email',
+            'clientid': '506344423173-ondopitsugevr6bpghn7vlipdi8r0bui.apps.googleusercontent.com',
+            'redirecturi': 'postmessage',
+            'accesstype': 'offline',
+            'cookiepolicy': 'single_host_origin',
+            'callback': 'signInCallback',
+            'approvalprompt': 'force'
+        });
+    }
+</script>
+<script>
     function signInCallback(authResult) {
     if (authResult['code']) {
         // hide sign-in button once user is authorized
-        $('#signInButton').attr('style', 'display:none');
+        $('#loginPanel').attr('style', 'display:none');
         $.ajax({
                 type: 'POST',
                 url: '/gconnect?state={{STATE}}',
@@ -91,11 +108,9 @@
    }(document, 'script', 'facebook-jssdk'));
 
    function sendTokenToServer() {
+    $('#loginPanel').attr('style', 'display:none');
     var access_token = FB.getAuthResponse()['accessToken'];
-    console.log(access_token)
-    console.log('Welcome!  Fetching your information.... ');
     FB.api('/me', function(response) {
-        console.log('Successful login for: ' + response.name);
         $.ajax({
                 url: '/fbconnect?state={{STATE}}',
                 type: 'POST',
@@ -129,5 +144,6 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
         integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
         crossorigin="anonymous"></script>
+<script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
 </body>
 </html>
