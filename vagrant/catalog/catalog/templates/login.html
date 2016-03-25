@@ -69,7 +69,7 @@
         $('#loginPanel').attr('style', 'display:none');
         $.ajax({
                 type: 'POST',
-                url: '/gconnect?state={{STATE}}',
+                url: '/connect?provider=google&state={{STATE}}',
                 processData: false,
                 contentType: 'application/octet-stream; charset=utf-8',
                 data: authResult['code'],
@@ -112,7 +112,7 @@
     var access_token = FB.getAuthResponse()['accessToken'];
     FB.api('/me', function(response) {
         $.ajax({
-                url: '/fbconnect?state={{STATE}}',
+                url: '/connect?provider=facebook&state={{STATE}}',
                 type: 'POST',
                 data: access_token,
                 contentType: 'application/octet-stream; charset=utf-8',
