@@ -48,7 +48,8 @@ def api_list_restaurants():
         return resp
 
 
-@app.route('/api/v1.0/restaurant/<int:restaurant_id>/menu', methods=['GET'])
+@app.route('/api/v1.0/restaurant/<int:restaurant_id>/', methods=['GET'])
+@app.route('/api/v1.0/restaurant/<int:restaurant_id>/menu/', methods=['GET'])
 def api_view_restaurant_menu(restaurant_id):
     """ All menu items in restaurant_id
 
@@ -75,7 +76,7 @@ def api_view_restaurant_menu(restaurant_id):
         return resp
 
 
-@app.route('/api/v1.0/restaurant/<int:restaurant_id>/menu/<int:menu_id>', methods=['GET'])
+@app.route('/api/v1.0/restaurant/<int:restaurant_id>/menu/<int:menu_id>/', methods=['GET'])
 def view_menu_item_json(restaurant_id, menu_id):
     """ List specific menu item of a specific restaurant
 
