@@ -27,7 +27,10 @@ Base.metadata.create_all(engine)
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
-CLIENT_ID = json.loads(open('catalog/client_secrets.json', 'r').read())['web']['client_id']
+G_CLIENT_ID = json.loads(open('catalog/client_secrets.json', 'r').read())['web']['client_id']
+
+FB_APP_ID = json.loads(open('catalog/fb_client_secrets.json', 'r').read())['web']['app_id']
+FB_APP_SECRET = json.loads(open('catalog/fb_client_secrets.json', 'r').read())['web']['app_secret']
 
 
 @app.route('/login')
@@ -125,7 +128,7 @@ def g_connect(code):
         return response
 
     # Verify that the access token is valid for this app.
-    if result['issued_to'] != CLIENT_ID:
+    if result['issued_to'] != G_CLIENT_ID:
         response = make_response(
             json.dumps("Token's client ID does not match app's."), 401)
         response.headers['Content-Type'] = 'application/json'
@@ -163,10 +166,8 @@ def fb_connect(access_token):
     Returns: json - user info data
 
     """
-    app_id = json.loads(open('catalog/fb_client_secrets.json', 'r').read())['web']['app_id']
-    app_secret = json.loads(open('catalog/fb_client_secrets.json', 'r').read())['web']['app_secret']
     url = 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_exchange_token=%s' % (
-        app_id, app_secret, access_token)
+        FB_APP_ID, FB_APP_SECRET, access_token)
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
 
