@@ -32,6 +32,7 @@ CLIENT_ID = json.loads(open('catalog/client_secrets.json', 'r').read())['web']['
 
 @app.route('/login')
 def show_login():
+    """ create anti-forgery state token and forward it to login.html page """
     state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in xrange(32))
     login_session['state'] = state
     return render_template('login.html', STATE=state)
@@ -39,11 +40,13 @@ def show_login():
 
 @app.route('/logout')
 def show_logout():
+    """ just renders logout.html page """
     return render_template('logout.html')
 
 
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
+    """ google oauth: verify access token and login user """
     # Validate state token
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)
@@ -134,6 +137,7 @@ def gconnect():
 
 @app.route('/fbconnect', methods=['POST'])
 def fbconnect():
+    """ facebook oauth: verify access token and login user """
     # Validate state token
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)
@@ -196,6 +200,7 @@ def fbconnect():
 
 @app.route('/disconnect', methods=['POST'])
 def disconnect():
+    """ handles logout request for both google and facebook """
     access_token = login_session.get('access_token')
 
     if access_token is None:
@@ -222,6 +227,7 @@ def disconnect():
 
 
 def g_disconnect(access_token):
+    """ logout from google session """
     url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % access_token
     h = httplib2.Http()
     check_response(h.request(url, 'GET')[0])
@@ -229,6 +235,7 @@ def g_disconnect(access_token):
 
 
 def fb_disconnect(access_token):
+    """ logout from facebook session """
     url = 'https://graph.facebook.com/%s/permissions?access_token=%s' % (login_session['facebook_id'], access_token)
     h = httplib2.Http()
     check_response(h.request(url, 'DELETE')[0])
@@ -236,12 +243,21 @@ def fb_disconnect(access_token):
 
 
 def check_response(response):
+    """ check revoke token's response """
     if response['status'] != '200':
         flash('Failed to revoke token for given user.', category='error')
         return redirect('/restaurant')
 
 
 def create_user(login_session):
+    """
+    creates a new user.
+    Args:
+        login_session: google/facebook login session obj
+
+    Returns: id of newly created user
+
+    """
     new_user = User(name=login_session['username'], email=login_session['email'], image=login_session['picture'])
     session.add(new_user)
     session.commit()
@@ -250,6 +266,14 @@ def create_user(login_session):
 
 
 def get_user_info(user_id):
+    """
+    get user query result obj.
+    Args:
+        user_id: user id whose info is needed
+
+    Returns: user query result obj
+
+    """
     try:
         return session.query(User).filter_by(id=user_id).one()
     except:
@@ -257,6 +281,14 @@ def get_user_info(user_id):
 
 
 def get_user_id(email):
+    """
+    get user id
+    Args:
+        email: user's email address.
+
+    Returns: user id
+
+    """
     try:
         user = session.query(User).filter_by(email=email).one()
         return user.id

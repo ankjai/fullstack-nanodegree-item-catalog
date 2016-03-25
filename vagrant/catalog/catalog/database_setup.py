@@ -7,6 +7,7 @@ Base = declarative_base()
 
 
 class User(Base):
+    """ User class to create 'user' table in db """
     __tablename__ = 'user'
     id = Column(Integer, primary_key=True)
     name = Column(String(80), nullable=False)
@@ -15,6 +16,7 @@ class User(Base):
 
 
 class Restaurant(Base):
+    """ Restaurant class to create 'restaurant' table in db """
     __tablename__ = 'restaurant'
     # here we define columns for the table restaurant
     # these columns are also python instance attribute
@@ -25,6 +27,8 @@ class Restaurant(Base):
 
     @property
     def serialize(self):
+        # serialize Restaurant obj and return dict representation
+        # w/ name and id
         return {
             'name': self.name,
             'id': str(self.id)
@@ -32,6 +36,7 @@ class Restaurant(Base):
 
 
 class MenuItem(Base):
+    """ MenuItem class to create 'menu_item' table in db """
     __tablename__ = 'menu_item'
     # here we define columns for the table restaurant
     # these columns are also python instance attribute
@@ -47,6 +52,8 @@ class MenuItem(Base):
 
     @property
     def serialize(self):
+        # serialize MenuItem obj and return dict representation
+        # w/ name, desc, id, price and course
         return {
             'name': self.name,
             'description': self.description,
