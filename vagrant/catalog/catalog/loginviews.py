@@ -27,8 +27,9 @@ Base.metadata.create_all(engine)
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+# Fetch client ID/Secret from json files
+# and store in a constant for reuse
 G_CLIENT_ID = json.loads(open('catalog/client_secrets.json', 'r').read())['web']['client_id']
-
 FB_APP_ID = json.loads(open('catalog/fb_client_secrets.json', 'r').read())['web']['app_id']
 FB_APP_SECRET = json.loads(open('catalog/fb_client_secrets.json', 'r').read())['web']['app_secret']
 
