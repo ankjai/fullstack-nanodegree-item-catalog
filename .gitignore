@@ -1,5 +1,4 @@
 .idea/
 vagrant/.vagrant/
+**/*.db
 **/*.pyc
-vagrant/catalog/restaurantmenu.db
-vagrant/catalog/restaurantapp.db
