@@ -1,4 +1,4 @@
-from catalog import app
+from . import app
 from flask import render_template, request, redirect, url_for, flash
 from flask import session as login_session
 from sqlalchemy import create_engine
@@ -8,7 +8,7 @@ from database_setup import Base, Restaurant
 
 # Create an engine that stores data in the local directory's
 # restaurantapp.db file.
-engine = create_engine('sqlite:////vagrant/catalog/catalog/restaurantapp.db')
+engine = create_engine('sqlite:///restaurantapp.db', connect_args={'check_same_thread': False})
 
 # Create all tables in the engine. This is equivalent to 'Create Table'
 # statement in SQL.

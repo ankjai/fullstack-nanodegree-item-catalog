@@ -1,7 +1,7 @@
 from xml.dom import minidom
 from xml.etree.ElementTree import Element, SubElement, tostring
 
-from catalog import app
+from . import app
 from flask import make_response
 from flask import request, jsonify
 from flask_restful import Api
@@ -14,7 +14,7 @@ api = Api(app)
 
 # Create an engine that stores data in the local directory's
 # restaurantapp.db file.
-engine = create_engine('sqlite:////vagrant/catalog/catalog/restaurantapp.db')
+engine = create_engine('sqlite:///restaurantapp.db', connect_args={'check_same_thread': False})
 
 # Create all tables in the engine. This is equivalent to 'Create Table'
 # statement in SQL.
